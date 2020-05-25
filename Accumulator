@@ -1,0 +1,10 @@
+scala> val rdd = sc.parallelize(Seq("This is example line","one more test line","error line","second partition line","error line","test line","error code","example line","obser line"))
+rdd: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[4] at parallelize at <console>:24
+
+scala> val errCnt = sc.longAccumulator("err_count")
+errCnt: org.apache.spark.util.LongAccumulator = LongAccumulator(id: 75, name: Some(err_count), value: 0)
+
+scala> rdd.foreach(x => if(x.contains("error")) {errCnt.add(1L)})
+
+scala> println(errCnt.value)
+3
