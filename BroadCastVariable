@@ -1,9 +1,6 @@
 scala> val ep = Seq(("Harry",1),("SOMA",1),("Sandy",3),("andy",2),("ted",3))
 ep: Seq[(String, Int)] = List((Harry,1), (SOMA,1), (Sandy,3), (andy,2), (ted,3))
 
-scala> val emp = sc.parallelize
-   def parallelize[T](seq: Seq[T],numSlices: Int)(implicit evidence$1: scala.reflect.ClassTag[T]): org.apache.spark.rdd.RDD[T]
-
 scala> val emp = sc.parallelize(ep)
 emp: org.apache.spark.rdd.RDD[(String, Int)] = ParallelCollectionRDD[0] at parallelize at <console>:26
 
@@ -15,9 +12,6 @@ dep: org.apache.spark.broadcast.Broadcast[scala.collection.immutable.Map[Int,Str
 
 scala> emp.map(x => x._1 + "," + x._2).collect
 res0: Array[String] = Array(Harry,1, SOMA,1, Sandy,3, andy,2, ted,3)
-
-scala> emp.map(x => x._1 + "," + x._2 + "," + dep.value.get(x._2).ge
-genericBuilder   get   getClass   getOrElse
 
 scala> emp.map(x => x._1 + "," + x._2 + "," + dep.value.get(x._2).get).collect.foreach(println)
 Harry,1,a
@@ -34,16 +28,6 @@ SOMA,1,a
 Sandy,3,c
 andy,2,b
 ted,3,c
-
-scala> dep.destory
-<console>:26: error: value destory is not a member of org.apache.spark.broadcast.Broadcast[scala.collection.immutable.Map[Int,String]]
-       dep.destory
-           ^
-
-scala> dep.destory()
-<console>:26: error: value destory is not a member of org.apache.spark.broadcast.Broadcast[scala.collection.immutable.Map[Int,String]]
-       dep.destory()
-           ^
 
 scala> dep.destroy()
 
