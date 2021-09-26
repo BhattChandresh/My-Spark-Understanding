@@ -1,0 +1,101 @@
+student(name, subject, marks, year)
+
+n1, english, 100, 2020
+n2, english,90, 2020
+n3, maths, 90,2020
+n4, maths,100,2020
+
+n1, english, 100, 2021
+n2, english,90, 2021
+n3, maths, 90,2021
+n4, maths,100,2021
+
+subject,2020,2021
+english,190,190
+maths,190,190
+
+
+df1
+val stduent = df1.createView("student")
+
+spark.sql("select subject, sum(marks) from student where year = 2020 group by subject")
+english, 190
+maths, 190
+
+
+val sub_2020 = df1.select()
+
+
+
+
+scala> val df1 = Seq(("n1","english",100,2020),("n2","english",90,2020),("n3","maths",90,2020),("n4","maths",100,2020)).toDF("name","subject","marks","year")
+df1: org.apache.spark.sql.DataFrame = [name: string, subject: string ... 2 more fields]
+
+scala> df1.show
++----+-------+-----+----+
+|name|subject|marks|year|
++----+-------+-----+----+
+|  n1|english|  100|2020|
+|  n2|english|   90|2020|
+|  n3|  maths|   90|2020|
+|  n4|  maths|  100|2020|
++----+-------+-----+----+
+
+
+scala> val df2 = Seq(("n1","english",100,2021),("n2","english",90,2021),("n3","maths",90,2021),("n4","maths",100,2021)).toDF("name","subject","marks","year")
+df2: org.apache.spark.sql.DataFrame = [name: string, subject: string ... 2 more fields]
+
+scala> df2.show
++----+-------+-----+----+
+|name|subject|marks|year|
++----+-------+-----+----+
+|  n1|english|  100|2021|
+|  n2|english|   90|2021|
+|  n3|  maths|   90|2021|
+|  n4|  maths|  100|2021|
++----+-------+-----+----+
+
+scala> val df3 = df1.union(df2)
+df3: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] = [name: string, subject: string ... 2 more fields]
+
+scala> df3.createOrReplaceTempView("Student")
+
+scala> spark.sql("select * from Student").show
++----+-------+-----+----+
+|name|subject|marks|year|
++----+-------+-----+----+
+|  n1|english|  100|2020|
+|  n2|english|   90|2020|
+|  n3|  maths|   90|2020|
+|  n4|  maths|  100|2020|
+|  n1|english|  100|2021|
+|  n2|english|   90|2021|
+|  n3|  maths|   90|2021|
+|  n4|  maths|  100|2021|
++----+-------+-----+----+
+
+NOTE: THIS IS WRONG OUPPUT. EXECUTED TO CHECK THE QUERY.
+scala> df3.groupBy("subject","year").sum("marks").show
++-------+----+----------+
+|subject|year|sum(marks)|
++-------+----+----------+
+|  maths|2021|       190|
+|english|2021|       190|
+|  maths|2020|       190|
+|english|2020|       190|
++-------+----+----------+
+
+
+scala> df3.groupBy("subject").pivot("year").sum("marks").show
++-------+----+----+                                                             
+|subject|2020|2021|
++-------+----+----+
+|  maths| 190| 190|
+|english| 190| 190|
++-------+----+----+
+
+
+
+
+
+
